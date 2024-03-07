@@ -33,11 +33,11 @@ class _ProfileViewState extends State<ProfileView> {
             )
             ),
 
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
 
-            Text(" Name ",
+            const Text(" Name ",
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -56,8 +56,8 @@ class _ProfileViewState extends State<ProfileView> {
 
                 ),
 
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(15.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
