@@ -25,12 +25,10 @@
 //
 
 
-import 'package:safe_drive/routes/app_routes.dart';
+import 'package:safe_drive/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'core/utils/size_utils.dart';
-import 'theme/theme_helper.dart';
 
 var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
 void main() {
@@ -53,8 +51,12 @@ class MyApp extends StatelessWidget {
           theme: theme,
           title: 'ammar_s_application1',
           debugShowCheckedModeBanner: false,
-          initialRoute: AppRoutes.postWallDesignContainerScreen,
-          routes: AppRoutes.routes,
+          // initialRoute: AppRoutes.postWallDesignContainerScreen,
+          // initialRoute: ServiceRequestAppRoutes.galileoDesignContainerScreen,
+          initialRoute: MakeRequestAppRoutes.makeRequestDesignScreen,
+
+          routes: MakeRequestAppRoutes.routes,
+          // routes: ServiceRequestAppRoutes.routes,
         );
       },
     );

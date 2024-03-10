@@ -12,6 +12,12 @@ class CustomTextStyles {
   static get labelLargeGray900 => theme.textTheme.labelLarge!.copyWith(
         color: appTheme.gray900,
       );
+
+  static get titleMediumBold => theme.textTheme.titleMedium!.copyWith(
+    fontSize: 18.fSize,
+    fontWeight: FontWeight.w700,
+    color: Colors.black
+  );
   // Title text style
   static get titleMediumGray900 => theme.textTheme.titleMedium!.copyWith(
         color: appTheme.gray900,
@@ -21,6 +27,11 @@ class CustomTextStyles {
   static get titleSmallGray900 => theme.textTheme.titleSmall!.copyWith(
         color: appTheme.gray900,
       );
+
+  static get titleSmallGray900Medium => theme.textTheme.titleSmall!.copyWith(
+    color: appTheme.gray900,
+    fontWeight: FontWeight.w500,
+  );
 }
 
 extension on TextStyle {

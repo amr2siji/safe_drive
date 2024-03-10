@@ -8,6 +8,16 @@ class AppDecoration {
   static BoxDecoration get fillGray => BoxDecoration(
         color: appTheme.gray50,
       );
+
+  static BoxDecoration get fillBlueGray => BoxDecoration(
+    color: appTheme.blueGray50,
+  );
+  static BoxDecoration get fillWhiteA => BoxDecoration(
+    color: appTheme.whiteA700,
+  );
+
+
+
 }
 
 class BorderRadiusStyle {
@@ -15,6 +25,13 @@ class BorderRadiusStyle {
   static BorderRadius get roundedBorder12 => BorderRadius.circular(
         12.h,
       );
+
+  static BorderRadius get roundedBorder8 => BorderRadius.circular(
+    8.h,
+  );
+
+
+
 }
 
 // Comment/Uncomment the below code based on your Flutter SDK version.

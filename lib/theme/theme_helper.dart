@@ -7,12 +7,12 @@ String _appTheme = "primary";
 /// Helper class for managing themes and colors.
 class ThemeHelper {
   // A map of custom color themes supported by the app
-  final Map<String, PrimaryColors> _supportedCustomColor = {
+  Map<String, PrimaryColors> _supportedCustomColor = {
     'primary': PrimaryColors()
   };
 
 // A map of color schemes supported by the app
-  final Map<String, ColorScheme> _supportedColorScheme = {
+  Map<String, ColorScheme> _supportedColorScheme = {
     'primary': ColorSchemes.primaryColorScheme
   };
 
@@ -49,6 +49,19 @@ class ThemeHelper {
       colorScheme: colorScheme,
       textTheme: TextThemes.textTheme(colorScheme),
       scaffoldBackgroundColor: appTheme.gray50,
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: appTheme.blueGray50,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.h),
+          ),
+          visualDensity: const VisualDensity(
+            vertical: -4,
+            horizontal: -4,
+          ),
+          padding: EdgeInsets.zero,
+        ),
+      ),
     );
   }
 
@@ -68,7 +81,15 @@ class TextThemes {
           fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
         ),
-        headlineSmall: TextStyle(
+    titleLarge: TextStyle(
+      color: appTheme.gray900,
+      fontSize: 22.fSize,
+      fontFamily: 'Inter',
+      fontWeight: FontWeight.w700,
+    ),
+
+
+    headlineSmall: TextStyle(
           color: appTheme.whiteA700,
           fontSize: 24.fSize,
           fontFamily: 'Inter',
@@ -81,7 +102,7 @@ class TextThemes {
           fontWeight: FontWeight.w500,
         ),
         titleMedium: TextStyle(
-          color: appTheme.whiteA700,
+          color: appTheme.gray900,
           fontSize: 16.fSize,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w500,
@@ -102,6 +123,10 @@ class ColorSchemes {
 
 /// Class containing custom colors for a primary theme.
 class PrimaryColors {
+
+  // Blue
+  Color get blue600 => Color(0XFF198EE5);
+
   // BlueGray
   Color get blueGray100 => const Color(0XFFD1DBE5);
   Color get blueGray50 => const Color(0XFFE8EDF2);
