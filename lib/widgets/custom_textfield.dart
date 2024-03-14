@@ -8,7 +8,7 @@ class CustomTextField extends StatelessWidget {
     this.width,
     this.focusNode,
     this.icon,
-    this.autofocus = true,
+    this.autofocus = false,
     this.textStyle,
     this.hintText,
     this.hintStyle,
