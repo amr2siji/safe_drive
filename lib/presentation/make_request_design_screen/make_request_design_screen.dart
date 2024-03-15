@@ -1,6 +1,5 @@
 import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:safe_drive/configuration/config.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:safe_drive/presentation/make_request_design_screen/vehicleMake.dart';
 import 'package:safe_drive/widgets/custom_textfield.dart';
 import 'package:safe_drive/widgets/date_time_picker.dart';
@@ -11,7 +10,9 @@ import 'package:safe_drive/widgets/make_request_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:safe_drive/core/app_export.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:safe_drive/widgets/custom_textfield.dart';
+
 
 import '../../configuration/config.dart';
 
@@ -26,6 +27,9 @@ class MakeRequestDesignScreen extends StatefulWidget {
 
 class _MakeRequestDesignScreenState extends State<MakeRequestDesignScreen> {
 
+
+  List<VehicleMake> vehicleMakes = [];
+  String? selectedVehicleMake;
 
   List<String> dropdownItemList = [
     "Item One",
@@ -55,6 +59,8 @@ class _MakeRequestDesignScreenState extends State<MakeRequestDesignScreen> {
 
   TextEditingController _dateTime = TextEditingController();
 
+  TextEditingController _timeSlot = TextEditingController();
+
   List? items;
 
   void initState() {
@@ -62,8 +68,8 @@ class _MakeRequestDesignScreenState extends State<MakeRequestDesignScreen> {
     super.initState();
 
 
-
-    addServicRequest();
+    fetchVehicleMakeNames();
+    addServiceRequest();
   }
 
 
@@ -110,7 +116,7 @@ class _MakeRequestDesignScreenState extends State<MakeRequestDesignScreen> {
                     ),
                     hintText: "Select vehicle make",
                     alignment: Alignment.center,
-                    items: dropdownItemList,
+                    items: vehicleMakes.map((make) => make.vehicleMakeName).toList(),
                     onChanged: (value) {
                       setState(() {
                         _vehicleMake.text = value;
@@ -210,13 +216,47 @@ class _MakeRequestDesignScreenState extends State<MakeRequestDesignScreen> {
                 Padding(
                   padding: EdgeInsets.only(left: 16.h),
                   child: Text(
-                    "Date and Time",
+                    "Date ",
                     style: theme.textTheme.titleMedium,
                   ),
                 ),
                 SizedBox(height: 9.v),
+
+
                 _buildDepthFrameZero(context,selectedDate),
-                SizedBox(height: 24.v),
+                SizedBox(height: 27.v),
+                Padding(
+                  padding: EdgeInsets.only(left: 16.h),
+                  child: Text(
+                    "Time Slot",
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
+                SizedBox(height: 8.v),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.h),
+                  child: CustomDropDown(
+                    icon: Container(
+                      margin: EdgeInsets.fromLTRB(30.h, 16.v, 16.h, 16.v),
+                      child: CustomImageView(
+                        imagePath: ImageConstant.imgTick,
+                        height: 24.adaptSize,
+                        width: 24.adaptSize,
+                      ),
+                    ),
+                    hintText: "Select Time Slot",
+                    alignment: Alignment.center,
+                    items: dropdownItemList2,
+                    onChanged: (value) {
+
+                      setState(() {
+                        _timeSlot.text = value;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(height: 26.v),
+
                 _buildDepthFrameZero1(context),
                 SizedBox(height: 12.v),
                 Container(
@@ -227,6 +267,7 @@ class _MakeRequestDesignScreenState extends State<MakeRequestDesignScreen> {
                   ),
                 ),
                 SizedBox(height: 5.v),
+
               ],
             ),
           ),
@@ -268,61 +309,71 @@ class _MakeRequestDesignScreenState extends State<MakeRequestDesignScreen> {
     );
   }
 
-  final dio = new Dio();
-
-  void addServicRequest() async{
-
-    print("vehicle make : "+_vehicleMake.text+"\nvehicle model : "+_vehicleModel.text+"\n service canter : "+ _serviceCenter.text + "\n date time : "+ _dateTime.text);
-    if(_vehicleMake.text.isNotEmpty && _vehicleModel.text.isNotEmpty && _serviceCenter.text.isNotEmpty && _specificServices.text.isNotEmpty && _dateTime.text.isNotEmpty)
-    {
-      
+  // final dio = new Dio();
 
 
-      var serviceRequestBody ={
-        "vehicleMake" : _vehicleMake.text,
-        "vehicleModel" : _vehicleModel.text,
-        "serviceCenter" : _serviceCenter.text,
-        "specificServices" : _specificServices.text,
-        "dateTime" : _dateTime.text
-      };
+  void addServiceRequest() async {
+    final String url = 'https://serverbackend-w5ny.onrender.com/servicerequest';
 
+    Map<String, dynamic> requestData = {
+            "vehicleMake" : _vehicleMake.text,
+            "vehicleModel" : _vehicleModel.text,
+            "serviceCenter" : _serviceCenter.text,
+            "specificServices" : _specificServices.text,
+            "dateTime" : _dateTime.text,
+            "timeSlot"  : _timeSlot.text,
 
+    };
 
-      var response = await http.post(
-          Uri.parse("http://127.0.0.1:3000/servicerequest"),
-          headers: {'Content-Type': 'application/json; charset=utf-8'},
-          body: jsonEncode(serviceRequestBody)
+    // Encode the request body
+    String requestBody = jsonEncode(requestData);
+
+    // Set up headers
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      // Make POST request
+      final http.Response response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: requestBody,
       );
 
-      var jsonResponse = jsonDecode(response.body);
-      print("json response : "+jsonResponse);
-      print(jsonResponse['status']);
-
-      if(jsonResponse['status']){
-        _vehicleMake.clear();
-        _vehicleModel.clear();
-        _serviceCenter.clear();
-        _specificServices.clear();
-        _dateTime.clear();
-        Navigator.pop(context);
-        addServicRequest();
-      }else{
-        print("SomeThing Went Wrong");
+      // Check status code for success (2xx) or failure (4xx or 5xx)
+      if (response.statusCode == 200) {
+        print('Request posted successfully');
+        print('Response: ${response.body}');
+      } else {
+        print('Failed to post request. Status code: ${response.statusCode}');
+        print('Response: ${response.body}');
       }
-
+    } catch (e) {
+      print('Exception thrown: $e');
     }
-    // var response = await dio.post('http://192.168.132.22:3000/servicerequest',
-    //     data: {
-    //       "vehicleMake" : _vehicleMake.text,
-    //       "vehicleModel" : _vehicleModel.text,
-    //       "serviceCenter" : _serviceCenter.text,
-    //       "specificServices" : _specificServices.text,
-    //       "dateTime" : _dateTime.text
-    //     });
-    //
-    // print(response);
 
   }
+
+  // Get Vehicle make names
+
+  Future<void> fetchVehicleMakeNames() async {
+
+    final String url = 'https://serverbackend-w5ny.onrender.com/vehiclemake';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+
+      setState(() {
+        vehicleMakes.clear();
+        vehicleMakes = jsonData.map((json) => VehicleMake.fromJson(json)).toList();
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
 
   /// Section Widget
   Widget _buildDepthFrameZero1(BuildContext context) {
@@ -344,7 +395,7 @@ class _MakeRequestDesignScreenState extends State<MakeRequestDesignScreen> {
               buttonTextStyle: theme.textTheme.titleSmall!,
               onPressed: () {
                 // Implement the action you want to take when the button is pressed
-                addServicRequest();
+                addServiceRequest();
 
                 // You can replace the print statement with any action you desire.
               },
